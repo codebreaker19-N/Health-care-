@@ -6,37 +6,51 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Upload, ArrowRight, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { runEligibility, EligibilityResult } from "@/lib/eligibility-engine";
 import EligibilityResults from "@/components/EligibilityResults";
 
+const INDIAN_STATES = [
+  "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh",
+  "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand",
+  "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur",
+  "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab",
+  "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura",
+  "Uttar Pradesh", "Uttarakhand", "West Bengal", "Delhi", "Jammu & Kashmir",
+];
+
 const GetHelpPage = () => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<EligibilityResult | null>(null);
   const [form, setForm] = useState({
-    name: "", phone: "", age: "", location: "", condition: "", details: "", amount: "", income: "", urgency: "" as any,
+    name: "", phone: "", age: "", location: "", condition: "", details: "",
+    amount: "", income: "", urgency: "" as any, areaType: "" as any,
+    state: "", bpl: false,
   });
 
-  const handleChange = (field: string, value: string) => setForm(f => ({ ...f, [field]: value }));
+  const handleChange = (field: string, value: string | boolean) => setForm(f => ({ ...f, [field]: value }));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.name || !form.condition || !form.amount || !form.income || !form.urgency) {
+    if (!form.name || !form.condition || !form.amount || !form.income || !form.urgency || !form.age || !form.areaType || !form.state) {
       toast.error("Please fill all required fields");
       return;
     }
     setLoading(true);
     setResult(null);
 
-    // Simulate processing
     await new Promise(r => setTimeout(r, 2000));
 
     const eligResult = runEligibility({
       income: Number(form.income),
+      age: Number(form.age),
       disease: form.condition,
-      location: form.location || "Delhi",
+      areaType: form.areaType,
       urgency: form.urgency,
+      state: form.state,
+      bpl: form.bpl,
       estimatedCost: Number(form.amount),
     });
 
@@ -77,12 +91,19 @@ const GetHelpPage = () => {
                 </div>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="age">Age</Label>
+                    <Label htmlFor="age">Age *</Label>
                     <Input id="age" type="number" placeholder="Age" value={form.age} onChange={e => handleChange("age", e.target.value)} />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="location">Location</Label>
-                    <Input id="location" placeholder="City, State" value={form.location} onChange={e => handleChange("location", e.target.value)} />
+                    <Label>State *</Label>
+                    <Select value={form.state} onValueChange={v => handleChange("state", v)}>
+                      <SelectTrigger><SelectValue placeholder="Select state" /></SelectTrigger>
+                      <SelectContent>
+                        {INDIAN_STATES.map(s => (
+                          <SelectItem key={s} value={s}>{s}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
                 <div className="grid md:grid-cols-2 gap-4">
@@ -90,6 +111,19 @@ const GetHelpPage = () => {
                     <Label>Annual Income (₹) *</Label>
                     <Input type="number" placeholder="e.g. 200000" value={form.income} onChange={e => handleChange("income", e.target.value)} />
                   </div>
+                  <div className="space-y-2">
+                    <Label>Area Type *</Label>
+                    <Select value={form.areaType} onValueChange={v => handleChange("areaType", v)}>
+                      <SelectTrigger><SelectValue placeholder="Select area type" /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="rural">Rural</SelectItem>
+                        <SelectItem value="semi-urban">Semi-Urban</SelectItem>
+                        <SelectItem value="urban">Urban</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="grid md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label>Urgency Level *</Label>
                     <Select value={form.urgency} onValueChange={v => handleChange("urgency", v)}>
@@ -102,21 +136,34 @@ const GetHelpPage = () => {
                       </SelectContent>
                     </Select>
                   </div>
+                  <div className="space-y-2">
+                    <Label>Medical Condition *</Label>
+                    <Select value={form.condition} onValueChange={v => handleChange("condition", v)}>
+                      <SelectTrigger><SelectValue placeholder="Select condition" /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="cardiac">Cardiac / Heart</SelectItem>
+                        <SelectItem value="cancer">Cancer</SelectItem>
+                        <SelectItem value="kidney">Kidney</SelectItem>
+                        <SelectItem value="neuro">Neurological</SelectItem>
+                        <SelectItem value="ortho">Orthopedic</SelectItem>
+                        <SelectItem value="other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
-                <div className="space-y-2">
-                  <Label>Medical Condition *</Label>
-                  <Select value={form.condition} onValueChange={v => handleChange("condition", v)}>
-                    <SelectTrigger><SelectValue placeholder="Select condition type" /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="cardiac">Cardiac / Heart</SelectItem>
-                      <SelectItem value="cancer">Cancer</SelectItem>
-                      <SelectItem value="kidney">Kidney</SelectItem>
-                      <SelectItem value="neuro">Neurological</SelectItem>
-                      <SelectItem value="ortho">Orthopedic</SelectItem>
-                      <SelectItem value="other">Other</SelectItem>
-                    </SelectContent>
-                  </Select>
+
+                {/* BPL Checkbox */}
+                <div className="flex items-center space-x-3 bg-accent/30 rounded-xl p-4 border border-border">
+                  <Checkbox
+                    id="bpl"
+                    checked={form.bpl}
+                    onCheckedChange={(checked) => handleChange("bpl", !!checked)}
+                  />
+                  <Label htmlFor="bpl" className="text-sm cursor-pointer">
+                    I hold a <span className="font-semibold text-foreground">BPL (Below Poverty Line)</span> card / certificate
+                  </Label>
                 </div>
+
                 <div className="space-y-2">
                   <Label htmlFor="details">Treatment Details</Label>
                   <Textarea id="details" placeholder="Describe the medical condition and required treatment..." rows={4} value={form.details} onChange={e => handleChange("details", e.target.value)} />
@@ -141,7 +188,6 @@ const GetHelpPage = () => {
           </div>
         </section>
 
-        {/* Results */}
         {result && (
           <section className="py-16 bg-muted/30">
             <div className="container mx-auto px-4 max-w-3xl">
