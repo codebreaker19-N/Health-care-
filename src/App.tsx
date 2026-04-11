@@ -37,8 +37,9 @@ const App = () => (
             <Route path="/faq" element={<FAQPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
-            <Route path="*" element={<NotFound />} />
+          <Route path="*" element={<NotFound />} />
           </Routes>
+          <ChatBot />
         </BrowserRouter>
       </TooltipProvider>
     </AuthProvider>
