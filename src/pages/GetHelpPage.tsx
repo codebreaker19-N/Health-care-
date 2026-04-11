@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -5,9 +6,45 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Upload, ArrowRight } from "lucide-react";
+import { Upload, ArrowRight, Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import { runEligibility, EligibilityResult } from "@/lib/eligibility-engine";
+import EligibilityResults from "@/components/EligibilityResults";
 
 const GetHelpPage = () => {
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState<EligibilityResult | null>(null);
+  const [form, setForm] = useState({
+    name: "", phone: "", age: "", location: "", condition: "", details: "", amount: "", income: "", urgency: "" as any,
+  });
+
+  const handleChange = (field: string, value: string) => setForm(f => ({ ...f, [field]: value }));
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.name || !form.condition || !form.amount || !form.income || !form.urgency) {
+      toast.error("Please fill all required fields");
+      return;
+    }
+    setLoading(true);
+    setResult(null);
+
+    // Simulate processing
+    await new Promise(r => setTimeout(r, 2000));
+
+    const eligResult = runEligibility({
+      income: Number(form.income),
+      disease: form.condition,
+      location: form.location || "Delhi",
+      urgency: form.urgency,
+      estimatedCost: Number(form.amount),
+    });
+
+    setResult(eligResult);
+    setLoading(false);
+    toast.success("Eligibility analysis complete! 🎉");
+  };
+
   return (
     <div className="min-h-screen">
       <Navbar />
@@ -18,7 +55,7 @@ const GetHelpPage = () => {
               Get <span className="text-gradient-primary">Help</span>
             </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Submit your medical request and we'll connect you with the right support — schemes, NGOs, or donors.
+              Submit your medical request and we'll instantly match you with schemes, NGOs, and donors.
             </p>
           </div>
         </section>
@@ -27,33 +64,49 @@ const GetHelpPage = () => {
           <div className="container mx-auto px-4 max-w-2xl">
             <div className="bg-card rounded-2xl p-8 md:p-10 shadow-soft border border-border">
               <h2 className="text-2xl font-bold text-foreground mb-6">Patient Request Form</h2>
-              <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+              <form className="space-y-6" onSubmit={handleSubmit}>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="name">Full Name</Label>
-                    <Input id="name" placeholder="Enter patient name" />
+                    <Label htmlFor="name">Full Name *</Label>
+                    <Input id="name" placeholder="Enter patient name" value={form.name} onChange={e => handleChange("name", e.target.value)} />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="phone">Phone Number</Label>
-                    <Input id="phone" placeholder="+91 XXXXX XXXXX" />
+                    <Input id="phone" placeholder="+91 XXXXX XXXXX" value={form.phone} onChange={e => handleChange("phone", e.target.value)} />
                   </div>
                 </div>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="age">Age</Label>
-                    <Input id="age" type="number" placeholder="Age" />
+                    <Input id="age" type="number" placeholder="Age" value={form.age} onChange={e => handleChange("age", e.target.value)} />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="location">Location</Label>
-                    <Input id="location" placeholder="City, State" />
+                    <Input id="location" placeholder="City, State" value={form.location} onChange={e => handleChange("location", e.target.value)} />
+                  </div>
+                </div>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Annual Income (₹) *</Label>
+                    <Input type="number" placeholder="e.g. 200000" value={form.income} onChange={e => handleChange("income", e.target.value)} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Urgency Level *</Label>
+                    <Select value={form.urgency} onValueChange={v => handleChange("urgency", v)}>
+                      <SelectTrigger><SelectValue placeholder="Select urgency" /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="low">Low</SelectItem>
+                        <SelectItem value="medium">Medium</SelectItem>
+                        <SelectItem value="high">High</SelectItem>
+                        <SelectItem value="critical">🚨 Critical</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="condition">Medical Condition</Label>
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select condition type" />
-                    </SelectTrigger>
+                  <Label>Medical Condition *</Label>
+                  <Select value={form.condition} onValueChange={v => handleChange("condition", v)}>
+                    <SelectTrigger><SelectValue placeholder="Select condition type" /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="cardiac">Cardiac / Heart</SelectItem>
                       <SelectItem value="cancer">Cancer</SelectItem>
@@ -66,7 +119,7 @@ const GetHelpPage = () => {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="details">Treatment Details</Label>
-                  <Textarea id="details" placeholder="Describe the medical condition and required treatment..." rows={4} />
+                  <Textarea id="details" placeholder="Describe the medical condition and required treatment..." rows={4} value={form.details} onChange={e => handleChange("details", e.target.value)} />
                 </div>
                 <div className="space-y-2">
                   <Label>Upload Documents</Label>
@@ -77,16 +130,28 @@ const GetHelpPage = () => {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="amount">Estimated Treatment Cost (₹)</Label>
-                  <Input id="amount" type="number" placeholder="Enter amount in rupees" />
+                  <Label htmlFor="amount">Estimated Treatment Cost (₹) *</Label>
+                  <Input id="amount" type="number" placeholder="Enter amount in rupees" value={form.amount} onChange={e => handleChange("amount", e.target.value)} />
                 </div>
-                <Button variant="hero" size="lg" className="w-full">
-                  Submit Request <ArrowRight className="w-5 h-5" />
+                <Button variant="hero" size="lg" className="w-full" type="submit" disabled={loading}>
+                  {loading ? <><Loader2 className="w-5 h-5 animate-spin" /> Analyzing Eligibility...</> : <>Submit & Check Eligibility <ArrowRight className="w-5 h-5" /></>}
                 </Button>
               </form>
             </div>
           </div>
         </section>
+
+        {/* Results */}
+        {result && (
+          <section className="py-16 bg-muted/30">
+            <div className="container mx-auto px-4 max-w-3xl">
+              <h2 className="text-3xl font-bold text-foreground mb-8 text-center">
+                Your <span className="text-gradient-primary">Results</span>
+              </h2>
+              <EligibilityResults result={result} />
+            </div>
+          </section>
+        )}
       </main>
       <Footer />
     </div>
