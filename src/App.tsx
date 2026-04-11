@@ -15,6 +15,7 @@ import FAQPage from "./pages/FAQPage.tsx";
 import LoginPage from "./pages/LoginPage.tsx";
 import SignupPage from "./pages/SignupPage.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import { ChatBot } from "./components/ChatBot";
 
 const queryClient = new QueryClient();
 
