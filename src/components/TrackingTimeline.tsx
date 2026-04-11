@@ -1,4 +1,5 @@
-import { CheckCircle, Clock, FileCheck, Building2, Banknote, CircleDot } from "lucide-react";
+import React from "react";
+import { CheckCircle, FileCheck, Building2, Banknote, CircleDot } from "lucide-react";
 
 export type TrackingStep = {
   label: string;
@@ -31,36 +32,37 @@ const lineColors = {
 };
 
 const TrackingTimeline = ({ steps = defaultSteps }: TrackingTimelineProps) => {
-  const currentIdx = steps.findIndex(s => s.status === "current");
-  const progressPercent = currentIdx >= 0 ? ((currentIdx) / (steps.length - 1)) * 100 : 0;
+  const currentIdx = steps.findIndex((s) => s.status === "current");
+  const progressPercent = currentIdx >= 0 ? (currentIdx / (steps.length - 1)) * 100 : 0;
 
   return (
     <div className="space-y-4">
-      {/* Progress bar */}
       <div className="flex items-center gap-3 mb-2">
         <span className="text-sm font-medium text-foreground">Progress</span>
         <div className="flex-1 h-2 rounded-full bg-muted overflow-hidden">
           <div
             className="h-full rounded-full bg-gradient-cta transition-all duration-1000"
-            style={{ width:`${progressPercent}%` }}
+            style={{ width: `${progressPercent}%` }}
           />
         </div>
         <span className="text-sm font-semibold text-primary">{Math.round(progressPercent)}%</span>
       </div>
 
-      {/* Timeline*/}
       <div className="relative">
         {steps.map((step, i) => (
           <div key={i} className="flex items-start gap-4 relative">
-            {/* Vertical line */}
             {i < steps.length - 1 && (
-              <div className={`absolute left-[19px] top-[40px] w-0.5 h-[calc(100%-8px)] ${lineColors[step.status]}`} />
+              <div
+                className={`absolute left-[19px] top-[40px] w-0.5 h-[calc(100%-8px)] ${lineColors[step.status]}`}
+              />
             )}
-            {/* Icon */}
-            <div className={`relative z-10 w-10 h-10 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${statusColors[step.status]}`}>
+
+            <div
+              className={`relative z-10 w-10 h-10 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${statusColors[step.status]}`}
+            >
               {step.icon}
             </div>
-            {/* Label */}
+
             <div className="pb-8">
               <p className={`font-medium ${step.status === "pending" ? "text-muted-foreground" : "text-foreground"}`}>
                 {step.label}
