@@ -10,7 +10,7 @@ const INDIAN_STATES = [
   "Jharkhand", "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra",
   "Manipur", "Meghalaya", "Mizoram", "Nagaland", "Odisha",
   "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana",
-  "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal",
+  "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal", "kashmere"
 ];
 
 let msgId = 0;

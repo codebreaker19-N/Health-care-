@@ -25,7 +25,7 @@ export interface ChatOption {
   value: string;
 }
 
-export interface SchemeResult {
+export interface SchemeResult{
   name: string;
   coverage: string;
   matchType: "emergency" | "strong" | "additional";

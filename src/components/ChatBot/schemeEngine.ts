@@ -107,7 +107,7 @@ export function matchSchemes(profile: UserProfile): SchemeResult[] {
   return results;
 }
 
-function parseIncomeValue(income: string): number {
+function parseIncomeValue(income: string): number{
   switch (income) {
     case "Below ₹1 Lakh": return 80000;
     case "₹1–3 Lakh": return 200000;
