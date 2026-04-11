@@ -41,7 +41,7 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Support */}
+          {/* Support*/}
           <div>
             <h4 className="text-background font-semibold mb-4">Support</h4>
             <div className="flex flex-col gap-2">

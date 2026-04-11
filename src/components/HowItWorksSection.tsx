@@ -1,4 +1,4 @@
-import { FileText, Shield, Handshake, HeartPulse } from "lucide-react";
+import {FileText, Shield, Handshake, HeartPulse } from "lucide-react";
 
 const steps = [
   {

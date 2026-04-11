@@ -405,7 +405,7 @@ export function runEligibility(input: EligibilityInput): EligibilityResult {
   const hospitals = HOSPITALS[disease] || HOSPITALS.other;
 
   // Additional reasons
-  if (input.urgency === "critical" || input.urgency === "high") {
+  if (input.urgency === "critical"|| input.urgency === "high") {
     reasons.push(`High urgency detected — prioritized for faster hospital recommendation`);
   }
   if (input.bpl) {

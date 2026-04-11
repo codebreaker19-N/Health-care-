@@ -19,7 +19,7 @@ const Index = () => {
         <FeaturedCasesSection />
         <ImpactSection />
         <PartnersSection />
-        <CTASection />
+        <CTASection/>
       </main>
       <Footer />
     </div>

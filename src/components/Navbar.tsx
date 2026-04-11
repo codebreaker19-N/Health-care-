@@ -118,7 +118,7 @@ const Navbar = () => {
                     <Link to="/login" onClick={() => setMobileOpen(false)}>Log In</Link>
                   </Button>
                   <Button variant="hero" size="sm" className="flex-1" asChild>
-                    <Link to="/signup" onClick={() => setMobileOpen(false)}>Sign Up</Link>
+                    <Link to="/signup" onClick={()=> setMobileOpen(false)}>Sign Up</Link>
                   </Button>
                 </>
               )}

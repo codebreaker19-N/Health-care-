@@ -92,7 +92,7 @@ const GetHelpPage = () => {
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="age">Age *</Label>
-                    <Input id="age" type="number" placeholder="Age" value={form.age} onChange={e => handleChange("age", e.target.value)} />
+                    <Input id="age" type="number" placeholder="Age" value={form.age } onChange={e => handleChange("age", e.target.value)} />
                   </div>
                   <div className="space-y-2">
                     <Label>State *</Label>

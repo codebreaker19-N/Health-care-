@@ -42,13 +42,13 @@ const TrackingTimeline = ({ steps = defaultSteps }: TrackingTimelineProps) => {
         <div className="flex-1 h-2 rounded-full bg-muted overflow-hidden">
           <div
             className="h-full rounded-full bg-gradient-cta transition-all duration-1000"
-            style={{ width: `${progressPercent}%` }}
+            style={{ width:`${progressPercent}%` }}
           />
         </div>
         <span className="text-sm font-semibold text-primary">{Math.round(progressPercent)}%</span>
       </div>
 
-      {/* Timeline */}
+      {/* Timeline*/}
       <div className="relative">
         {steps.map((step, i) => (
           <div key={i} className="flex items-start gap-4 relative">

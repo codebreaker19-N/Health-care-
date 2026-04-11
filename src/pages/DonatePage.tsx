@@ -18,7 +18,7 @@ const DonatePage = () => {
             </p>
           </div>
         </section>
-        <FeaturedCasesSection />
+        <FeaturedCasesSection/>
         <CTASection />
       </main>
       <Footer />

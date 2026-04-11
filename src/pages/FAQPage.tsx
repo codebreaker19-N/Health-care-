@@ -1,6 +1,6 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import {Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 const faqs = [
   { q: "What is Arogyabandhu?", a: "Arogyabandhu is a healthcare support platform that connects patients in need with government schemes, NGOs, hospitals, and donors to fund and support medical treatments across India." },

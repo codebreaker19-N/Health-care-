@@ -19,7 +19,7 @@ import { ChatBot } from "./components/ChatBot";
 
 const queryClient = new QueryClient();
 
-const App = () => (
+const App = () =>(
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
       <TooltipProvider>

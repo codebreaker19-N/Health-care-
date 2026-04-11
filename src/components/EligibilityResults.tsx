@@ -9,7 +9,7 @@ interface Props {
   result: EligibilityResult;
 }
 
-const EligibilityResults = ({ result }: Props) => {
+const EligibilityResults = ({ result}: Props) => {
   const [showRejected, setShowRejected] = useState(false);
 
   return (

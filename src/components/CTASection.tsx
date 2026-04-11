@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Heart, ArrowRight } from "lucide-react";
+import {Heart, ArrowRight } from "lucide-react";
 
 const CTASection = () => {
   return (

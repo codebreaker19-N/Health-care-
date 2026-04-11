@@ -32,7 +32,7 @@ const SchemesPage = () => {
   const handleChange = (field: string, value: string | boolean) =>
     setForm((f) => ({ ...f, [field]: value }));
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e:React.FormEvent) => {
     e.preventDefault();
     if (!form.income || !form.age || !form.state || !form.condition) {
       toast.error("Please fill all required fields");

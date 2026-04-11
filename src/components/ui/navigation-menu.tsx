@@ -93,7 +93,7 @@ NavigationMenuViewport.displayName = NavigationMenuPrimitive.Viewport.displayNam
 const NavigationMenuIndicator = React.forwardRef<
   React.ElementRef<typeof NavigationMenuPrimitive.Indicator>,
   React.ComponentPropsWithoutRef<typeof NavigationMenuPrimitive.Indicator>
->(({ className, ...props }, ref) => (
+>(({ className, ...props}, ref) => (
   <NavigationMenuPrimitive.Indicator
     ref={ref}
     className={cn(

@@ -1,4 +1,4 @@
-import { Building2, ShieldCheck } from "lucide-react";
+import { Building2, ShieldCheck} from "lucide-react";
 
 const partners = [
   "AIIMS Delhi", "Apollo Hospitals", "Fortis Healthcare", "Max Healthcare",

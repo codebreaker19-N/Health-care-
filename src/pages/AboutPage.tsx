@@ -1,6 +1,6 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { Heart, Target, Eye, Users } from "lucide-react";
+import { Heart, Target, Eye, Users} from "lucide-react";
 
 const AboutPage = () => {
   return (
