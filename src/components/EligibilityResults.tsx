@@ -1,14 +1,17 @@
 import { EligibilityResult } from "@/lib/eligibility-engine";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { Building2, Heart, Briefcase, Lightbulb, MapPin, Star } from "lucide-react";
+import { Building2, Heart, Briefcase, Lightbulb, MapPin, Star, XCircle, ChevronDown, ChevronUp } from "lucide-react";
 import TrackingTimeline from "./TrackingTimeline";
+import { useState } from "react";
 
 interface Props {
   result: EligibilityResult;
 }
 
 const EligibilityResults = ({ result }: Props) => {
+  const [showRejected, setShowRejected] = useState(false);
+
   return (
     <div className="space-y-8 animate-fade-up">
       {/* Funding Coverage */}
@@ -26,22 +29,55 @@ const EligibilityResults = ({ result }: Props) => {
           <Building2 className="w-5 h-5 text-primary" /> 🏥 Government Schemes
         </h3>
         {result.schemes.length === 0 ? (
-          <p className="text-muted-foreground text-sm">No matching schemes found based on your income.</p>
+          <p className="text-muted-foreground text-sm">No matching schemes found based on your profile.</p>
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-4">
             {result.schemes.map((s, i) => (
               <div key={i} className="bg-accent/30 rounded-xl p-4 border border-border">
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="font-semibold text-foreground">{s.name}</h4>
-                  <Badge variant="secondary" className="text-xs">{s.matchPercent}% Match</Badge>
+                  <Badge variant="secondary" className="text-xs">{s.matchPercent}% Match ({s.score}/{s.maxScore})</Badge>
                 </div>
-                <p className="text-sm text-muted-foreground mb-1">{s.coverage}</p>
-                <p className="text-xs text-primary">{s.reason}</p>
+                <p className="text-sm text-muted-foreground mb-2">{s.coverage}</p>
+                {/* Score breakdown */}
+                <div className="bg-background/50 rounded-lg p-3 border border-border">
+                  <p className="text-xs font-medium text-foreground mb-1">Score Breakdown:</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {s.scoreBreakdown.map((b, j) => (
+                      <Badge key={j} variant="outline" className="text-xs font-normal">{b}</Badge>
+                    ))}
+                  </div>
+                </div>
               </div>
             ))}
           </div>
         )}
       </div>
+
+      {/* Rejected Schemes */}
+      {result.rejectedSchemes.length > 0 && (
+        <div className="bg-card rounded-2xl p-6 border border-border shadow-soft">
+          <button
+            className="w-full flex items-center justify-between text-left"
+            onClick={() => setShowRejected(!showRejected)}
+          >
+            <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
+              <XCircle className="w-5 h-5 text-destructive" /> ❌ Excluded Schemes ({result.rejectedSchemes.length})
+            </h3>
+            {showRejected ? <ChevronUp className="w-5 h-5 text-muted-foreground" /> : <ChevronDown className="w-5 h-5 text-muted-foreground" />}
+          </button>
+          {showRejected && (
+            <div className="space-y-2 mt-4">
+              {result.rejectedSchemes.map((r, i) => (
+                <div key={i} className="bg-destructive/5 rounded-lg p-3 border border-destructive/20">
+                  <p className="text-sm font-medium text-foreground">{r.name}</p>
+                  <p className="text-xs text-muted-foreground">{r.reason}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* NGOs */}
       <div className="bg-card rounded-2xl p-6 border border-border shadow-soft">
