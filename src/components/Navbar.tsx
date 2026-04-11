@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Heart } from "lucide-react";
+import { Menu, X, Heart, User, LogOut } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "sonner";
 
 const navLinks = [
   { label: "Home", path: "/" },
@@ -16,6 +18,12 @@ const navLinks = [
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
+  const { user, logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    toast.success("Logged out successfully");
+  };
 
   return (
     <nav className="sticky top-0 z-50 bg-card/80 backdrop-blur-lg border-b border-border">
@@ -45,14 +53,25 @@ const Navbar = () => {
         </div>
 
         <div className="hidden lg:flex items-center gap-3">
-          <Button variant="hero-outline" size="sm" asChild>
-            <Link to="/get-help">Get Help</Link>
-          </Button>
-          <Button variant="hope" size="sm" asChild>
-            <Link to="/donate">
-              <Heart className="w-4 h-4" /> Donate
-            </Link>
-          </Button>
+          {user ? (
+            <div className="flex items-center gap-3">
+              <span className="flex items-center gap-1.5 text-sm font-medium text-foreground bg-accent px-3 py-1.5 rounded-full">
+                <User className="w-4 h-4 text-primary" /> {user.name}
+              </span>
+              <Button variant="ghost" size="sm" onClick={handleLogout}>
+                <LogOut className="w-4 h-4" /> Logout
+              </Button>
+            </div>
+          ) : (
+            <>
+              <Button variant="hero-outline" size="sm" asChild>
+                <Link to="/login">Log In</Link>
+              </Button>
+              <Button variant="hero" size="sm" asChild>
+                <Link to="/signup">Sign Up</Link>
+              </Button>
+            </>
+          )}
         </div>
 
         {/* Mobile toggle */}
@@ -84,14 +103,25 @@ const Navbar = () => {
               </Link>
             ))}
             <div className="flex gap-3 mt-3 pt-3 border-t border-border">
-              <Button variant="hero-outline" size="sm" className="flex-1" asChild>
-                <Link to="/get-help" onClick={() => setMobileOpen(false)}>Get Help</Link>
-              </Button>
-              <Button variant="hope" size="sm" className="flex-1" asChild>
-                <Link to="/donate" onClick={() => setMobileOpen(false)}>
-                  <Heart className="w-4 h-4" /> Donate
-                </Link>
-              </Button>
+              {user ? (
+                <div className="flex items-center justify-between w-full">
+                  <span className="flex items-center gap-1.5 text-sm font-medium text-foreground">
+                    <User className="w-4 h-4 text-primary" /> {user.name}
+                  </span>
+                  <Button variant="ghost" size="sm" onClick={() => { handleLogout(); setMobileOpen(false); }}>
+                    <LogOut className="w-4 h-4" /> Logout
+                  </Button>
+                </div>
+              ) : (
+                <>
+                  <Button variant="hero-outline" size="sm" className="flex-1" asChild>
+                    <Link to="/login" onClick={() => setMobileOpen(false)}>Log In</Link>
+                  </Button>
+                  <Button variant="hero" size="sm" className="flex-1" asChild>
+                    <Link to="/signup" onClick={() => setMobileOpen(false)}>Sign Up</Link>
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </div>
